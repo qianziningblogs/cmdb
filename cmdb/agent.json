@@ -1,0 +1,77 @@
+{
+  "uuid": {
+    "system": {
+    "hostname": "",
+    "os": "", //windows/linux
+    "os_version": "",
+    //CentOS Linux release 7.4.1708 (Core)
+    "kernel": "",
+      "vendor": "",
+      //厂商Manufacturer: Huawei Technologies Co., Ltd.
+      "productname": "",
+      //产品名称Product Name: Tecal RH2288 V2-8S
+      "sn": "",
+    },
+    "bios": {
+      "vender": "",
+      //厂商Insyde Corp.
+      "version": ""
+      //版本号RMIBV386
+    },
+    "cpu": {
+      "modelname": "",
+      //型号Intel(R) CPU 2.00GHz
+      "cores": "",
+      //6
+      "count": "",
+      //24
+      "phyical": ""
+      //2
+    },
+    "mem": {
+      "child": [
+        {
+          "size": "",
+          //大小
+          "type": "",
+          //类型
+          "speed": "",
+          //速度
+          "vender": "",
+          //sn
+          "sn":""
+        }
+      ]
+    },
+    "network": {
+      "child": [
+        {
+          "dev": "ens33",
+          "mac": "",
+          "ipv4": "172.16.0.3",
+          //ip地址
+          "ipv4_netmask": "255.255.255.0",
+          //子网掩码
+          "ipv6":"",
+          "ipv6_netmask":"64"
+        }
+      ]
+    },
+    // 2102310JUP10E8000370
+    "disk": {
+      "raid": {
+        "vendor": "",
+        //厂商
+        "version": "",
+        //版本号
+        "count": "",
+        //数量
+        "level": "",
+        //raid 级别
+        "size": ""
+      },
+      "child": [
+      ]
+    }
+  }
+}

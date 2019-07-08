@@ -1,0 +1,38 @@
+{% extends "auto/auto_detail_base.html" %}
+{% load humansize %}
+
+{% block detail_content %}
+<table class="table table-bordered table-hover" role="grid">
+  <tbody>
+    <tr>
+        <td class="text-center" style="width:200px"> 名称 </td>
+        <td class="text-center">{{ auto.name }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 起始ip </td>
+        <td class="text-center">{{ start }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 结束ip </td>
+        <td class="text-center">{{ end }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 设备状态 </td>
+        <td class="text-center">{{ auto.get_status_display  }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 设备类型 </td>
+        <td class="text-center">{{ auto.get_asset_type_display }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 所属项目 </td>
+        <td class="text-center">{{ auto.team.name }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> zabbix模版 </td>
+        <td class="text-center">{{ zabbix }}</td>
+    </tr>
+
+  </tbody>
+</table>
+{% endblock %}

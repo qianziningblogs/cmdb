@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load humansize %}
+
+{% block content %}
+<div class="box">
+  <div class="box-header">
+    <h4 class="box-title">{{ page_title }}</h4>
+  </div>
+  <!-- /.box-header -->
+  <div class="box-body">
+    <div class="row">
+      <div class="col-sm-12">
+        <ul class="nav nav-tabs">
+          <li class="{% if request.GET.tab == 'baseinfo' or not request.GET.tab %} active{% endif %}" ><a href="{% url 'storage:storage_detail' storage.id %}?tab=baseinfo">基本信息</a></li>
+          <li class="{% if request.GET.tab == 'inter' %} active{% endif %}" ><a href="#">接口详情</a></li>
+        </ul>
+
+        {% block detail_content %}{% endblock %}
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer_script %}
+<script>
+$(function(){
+  $("#assets_menu").addClass('active menu-open');
+  $("#menu_storage").addClass('active');
+
+});
+</script>
+{% endblock %}

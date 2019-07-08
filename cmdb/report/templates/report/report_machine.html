@@ -1,0 +1,237 @@
+{% extends "report/report_base.html" %}
+{% load get_url_args %}
+{% block export_content %}
+
+    <div class="box-body">
+      <div class="well">
+        <form class="form-inline">
+          <div class="form-group">
+            <input class="form-control hidden" name="tab" type="text" value="{{ request.GET.tab }}">
+            <input class="form-control" name="hostname" type="text" value="{{ request.GET.hostname }}" placeholder="主机名">
+            <input class="form-control" name="ip" type="text" value="{{ request.GET.ip }}" placeholder="IP">
+            <input class="form-control" name="team" type="text" value="{{ request.GET.team }}" placeholder="项目名">
+            <input class="form-control" name="cabinet" type="text" value="{{ request.GET.cabinet }}" placeholder="机柜">
+            <input class="form-control" name="responsible" type="text" value="{{ request.GET.responsible }}" placeholder="责任人">
+          </div>
+          <button id="search_btn" type="submit" class="btn btn-sm btn-primary">查询</button>
+
+          <a id="export_link" href="{% url 'report:machine'%}?{% get_url_args request.get_full_path %}&download=1"><button type="button" id="export_btn" class="btn btn-sm btn-success
+                    {% if not hosts or  not request.user.is_superuser %}disabled{% endif %}">导出数据</button></a>
+
+          <div class="btn-group">
+              <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false">
+                数据导入 <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'report:down_demo' "machine" %}"><button type="button" class="btn btn-warning
+btn-xs">模板下载</button></a></li>
+                <li><a href="" data-toggle="modal" data-target=".upload"><button class="btn btn-success
+btn-xs">导入数据</button></a></li>
+              </ul>
+          </div>
+        </form>
+      <!-- Large modal -->
+        <div class="modal fade upload">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">导入csv文件</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form form-inline" action="{% url 'report:upload' %}" id="upload_f" method="post"
+                      enctype="multipart/form-data">
+                    {% csrf_token  %}
+                    <div class="col-md-8">
+                    {{ form.docfile }}
+                    </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="upload()" data-dismiss="modal">开始导入</button>
+              </div>
+            </div>
+            <!-- /.modal-content -->
+          <!-- /.modal-dialog -->
+            </div>
+        </div>
+
+    <!--search-->
+    <div class="row">
+        <div class="col-sm-12">
+          <table id="" class="table table-bordered table-hover" role="grid">
+            <thead>
+              <tr role="row">
+                <th class="text-center">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name= "hostname" id="hostname" checked>主机名
+                        </label>
+                    </div>
+                </th>
+                <th class="text-center">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name= "os" id="os" checked>操作系统
+                        </label>
+                    </div>
+                </th>
+                  <th class="text-center">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name= "responsible" id="responsible" checked>负责人
+                        </label>
+                    </div>
+                </th>
+                                 <th class="text-center">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name= "cabinet" id="cabinet" checked>机柜
+                        </label>
+                    </div>
+                </th>
+                  <th class="text-center">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name= "ip" id="ip" checked>管理ip
+                        </label>
+                    </div>
+                </th>
+                  <th class="text-center">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name= "status" id="status" checked>状态
+                        </label>
+                    </div>
+                </th>
+
+                  <th class="text-center">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name= "asset_type" id="asset_type" checked>类型
+                        </label>
+                    </div>
+                </th>
+                  <th class="text-center">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name= "team" id="team" checked>项目组
+                        </label>
+                    </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for host in hosts  %}
+                    <tr>
+                        <td class="text-center">{{ host.hostname }}</td>
+                        <td class="text-center"><small> {{ host.os }}</small></td>
+                        <td class="text-center"> {{ host.responsible }}</td>
+                        <td class="text-center"> {{ host.cabinet }}</td>
+                        <td class="text-center"> {{ host.ip }}</td>
+                        <td class="text-center"> {{ host.get_status_display }}</td>
+                        <td class="text-center"> {{ host.get_asset_type_display }}</td>
+                        <td class="text-center"> {{ host.team }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+            <p>共计 <em>{{ num }}</em> 条{% if hosts|length > 20 %},仅显示20条{% endif %}</p>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+    <!---table-->
+
+    </div>
+{% endblock %}
+
+{% block footer_script %}
+<script>
+
+    $(function () {
+        $("#assets_menu").addClass('active menu-open');
+        $("#menu_report").addClass('active');
+        var model_field_str = "";
+
+        // check 事件
+        $("table :checkbox").click(function () {
+            // 复位
+            model_field_str = "";
+            // 遍历状态
+            var checkboxesList = $("table :checkbox");
+            $.each(checkboxesList,function(i,item){
+               if($(item).prop("checked") === false){
+                   model_field_str += item.name+",";
+                   console.log("nochecked:", i, item.id, item.name);
+                }else{
+                   console.log("checked:", i, item.id, item.name);
+               }
+        　　});
+           console.log("exclude_field:", model_field_str);
+           var full_path = "{{ request.get_full_path }}";
+           if(full_path.indexOf("?",0) === 0){
+              full_path += "?"
+           }
+           console.log(full_path);
+           $("#export_link").attr({"href":"{{ request.get_full_path }}"+"&exclude="+model_field_str+"&download=1"});
+        });
+
+    });
+
+    //ajax 提交form表单
+    function upload() {
+            var form = new FormData(document.getElementById("upload_f"));
+            $.ajax({
+            //几个参数需要注意一下
+                type: "POST",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                contentType: false,
+                processData: false,
+                url: "{% url 'report:upload' %}" ,//url
+{#                data: $('#upload_f').serialize(),#}
+                data: form,
+                success: function (result, status, xhr) {
+{#                    console.log(result);//打印服务端返回的数据(调试用)#}
+{#                    console.log(status);#}
+{#                    console.log(xhr);#}
+                    if(result.code === "1"){
+                        layer.open({
+                        type: 0,
+                        title: "导入失败",
+                        content: result.msg,
+                        icon: 2,
+                        skin: "layui-layer-lan"
+                        });
+                    }else{
+                       layer.open({
+                        type: 0,
+                        title: "导入成功",
+                        content: "共成功导入 "+result.data.length+" 条",
+                        icon: 1,
+                        skin: "layui-layer-lan"
+                        });
+                       location.reload();
+                    }
+                },
+                error : function(xhr, status, error) {
+{#                    console.log(xhr);#}
+{#                    console.log(status);#}
+{#                    console.log(error);#}
+                    layer.open({
+                        type: 0,
+                        title: "Server Error",
+                        content: "后台error"+error,
+                        icon: 2,
+                        skin: "layui-layer-lan"
+                    });
+                }
+            });
+    }
+
+</script>
+
+{% endblock %}

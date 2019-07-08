@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="box">
+    <div class="box-header">
+      <h1 class="box-title">{{ page_title }}</h1>
+      <a href="{% url 'server:room_create' %}" class="btn bg-purple btn-sm pull-right">添加机房</a>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+      <div class="row">
+        <div class="col-sm-12">
+          <table id="" class="table table-bordered table-hover" role="grid">
+            <thead>
+              <tr role="row">
+                <th class="text-center">机房名称</th>
+                <th class="text-center">机房位置</th>
+                <th class="text-center">所在城市</th>
+                <th class="text-center">所在层数</th>
+                <th class="text-center">客户经理</th>
+                <th class="text-center">电话</th>
+                <th class="text-center">ip范围</th>
+                <th class="text-center">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for room in enginerooms %}
+              <tr role="row" class="odd">
+                <td class="text-center"><a href="#">{{ room.name }}</a></td>
+                <td class="text-center"><small> {{ room.address }}</small></td>
+                <td class="text-center"> {{ room.city }}</td>
+                <td class="text-center"> {{ room.floor }}</td>
+                <td class="text-center"> {{ room.account_manager }}</td>
+                <td class="text-center"> {{ room.phone }}</td>
+                <td class="text-center"> {{ room.ip_range }}</td>
+                <td class="text-center">
+                  <div class="btn-group">
+                    <a type="button" href="#" data-url="{% url 'server:room_update' room.pk %}" class="edit-btn btn btn-primary btn-xs">编辑</a>
+                    <a type="button" href="#" class="btn btn-danger btn-xs">删除</a>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="row">
+          {% include 'paginator.html' %}
+      </div>
+    </div>
+    <!-- /.box-body -->
+</div>
+{% endblock %}
+
+{% block footer_script %}
+<script>
+
+$(function(){
+    $("#assets_menu").addClass('active menu-open');
+    $("#menu_engineroom").addClass('active');
+     $(".edit-btn").on('click', function(e) {
+        e.preventDefault();
+        var url = $(this).attr('data-url');
+        ui.box({
+            title: '编辑标签',
+            size: 'lg',
+            footer: false,
+            remote: url
+        });
+    });
+})
+</script>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "servers/machine_detail.html" %}
+{% load humansize %}
+
+{% block detail_content %}
+<table id="" class="table table-bordered table-hover" role="grid">
+  <thead>
+    <tr role="row">
+      <th class="text-center">序号</th>
+      <th class="text-center">主机名</th>
+      <th class="text-center">IP</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for kvm in kvms %}
+    <tr role="row" class="odd">
+      <td class="text-center">{{ forloop.counter }}</td>
+      <td class="text-center">{{ kvm.hostname }}</td>
+      <td class="text-center">{{ kvm.ip }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  <tfoot>
+  </tfoot>
+</table>
+
+{% endblock %}

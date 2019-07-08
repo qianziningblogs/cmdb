@@ -1,0 +1,34 @@
+{% extends "servers/machine_detail.html" %}
+{% load humansize %}
+
+{% block detail_content %}
+<table id="" class="table table-bordered table-hover" role="grid">
+  <thead>
+    <tr role="row">
+      <th class="text-center">序号</th>
+      <th class="text-center">名称</th>
+      <th class="text-center">mac地址</th>
+      <th class="text-center">ipv4地址</th>
+      <th class="text-center">ipv4掩码</th>
+      <th class="text-center">ipv6地址</th>
+      <th class="text-center">ipv6掩码</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for network in networks %}
+    <tr role="row" class="odd">
+      <td class="text-center">{{ forloop.counter }}</td>
+      <td class="text-center">{{ network.dev }}</td>
+      <td class="text-center">{{ network.mac }}</td>
+      <td class="text-center"> {{ network.ipv4 }} </td>
+      <td class="text-center">{{ network.ipv4_netmask }}</td>
+      <td class="text-center"> {{ network.ipv6 }} </td>
+      <td class="text-center">{{ network.ipv6_netmask }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  <tfoot>
+  </tfoot>
+</table>
+
+{% endblock %}

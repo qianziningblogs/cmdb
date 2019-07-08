@@ -1,0 +1,85 @@
+<html>
+<head>
+<title>ZH-SSH</title>
+<style>
+  #go_default_sideinfo {
+     display: none;
+ }
+  #go_default_icon_newws, #go_default_icon_prefs, #go_default_icon_grid, #go_default_icon_bookmarks {
+    display: none;
+ }
+
+</style>
+<head>
+<body>
+<div id="gateone_container" style="background-color: blue;position: relative; width: 100%; height: 600px;margin: 0
+auto">
+    <div id="gateone"></div>  
+</div>  
+  
+<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+<script type="text/javascript" src="/static/plugins/gateone/gateone.js"></script>
+
+
+
+<script>  
+  
+    $(document).ready(function(){           
+  
+        var ip = "{{ sship }}";   // 想办法拿到要登陆的设备的ip地址， 有多种方法， 比如把ip地址放置一个隐藏的input标签内， 或者通过url的参数行获取
+  
+        var ssh_url = 'ssh://root@' + ip + ':' + '22/?identities=id_rsa';             
+  
+        var request = $.ajax({  
+  
+            url:'/ssh/get_auth_obj/',   // api认证方式， 参考gateone文档
+  
+            type:"GET",  
+  
+            dataType:"json"
+  
+        });  
+  
+         request.done(function(auth_info){  
+  
+            console.log(auth_info);
+            console.log(auth_info.url);
+            console.log(auth_info.auth);
+            GateOne.init({  
+                url: auth_info.url,
+                theme:'black',
+               goDiv:'#gateone'
+  
+            });  
+  
+         });  
+  
+  
+  
+        GateOne.Base.superSandbox("GateOne.SomePlugin", ["GateOne", "GateOne.Net",  "GateOne.Terminal.Input", "GateOne.Terminal"], function(window, undefined) {  
+  
+            // this will ensure that modules in superSandbox will load completely first, then execute your code  
+  
+            // Put your code here  
+  
+            var location =  ip;                
+            console.log(ssh_url);
+  
+            GateOne.prefs.autoConnectURL=ssh_url;  
+  
+            GateOne.prefs.fontSize="100%";  
+  
+            GateOne.prefs.scrollback = 10000;  // scrollback buffer up to 10,000 lines  
+  
+            GateOne.Terminal.loadFont("Source Code Pro", "150%");  
+            GateOne.locations; // Holds the state of all current known/open locations  
+  
+            GateOne.Net.setLocation(location); // Change locations in the current tab on-the-fly!这里设置的作用在于记录和保持ssh登陆的状态，只要不logout或者断开session，关闭页面后打开还会回到上次的状态  
+  
+        });  
+  
+    }); // end of document ready  
+ 
+</script>
+</body>
+</html>

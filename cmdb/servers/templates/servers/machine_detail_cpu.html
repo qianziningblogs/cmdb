@@ -1,0 +1,29 @@
+{% extends "servers/machine_detail.html" %}
+{% load humansize %}
+{% load string_to_time %}
+
+{% block detail_content %}
+<table id="" class="table table-bordered table-hover" role="grid">
+    <tbody>
+        {% for cpu in cpus %}
+        <tr>
+            <td class="text-center" style="width:200px"> 型号 </td>
+            <td class="text-center">{{ cpu.modelname }}</td>
+        </tr>
+         <tr>
+            <td class="text-center" style="width:200px"> 每颗核数 </td>
+            <td class="text-center">{{ cpu.cores }}</td>
+        </tr>
+         <tr>
+            <td class="text-center" style="width:200px"> 总核数 </td>
+            <td class="text-center">{{ cpu.count }}</td>
+        </tr>
+         <tr>
+            <td class="text-center" style="width:200px"> 座数 </td>
+            <td class="text-center">{{ cpu.phyical }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

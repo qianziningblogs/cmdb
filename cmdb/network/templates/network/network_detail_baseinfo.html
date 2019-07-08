@@ -1,0 +1,95 @@
+{% extends "network/network_detail.html" %}
+{% load humansize %}
+
+{% block detail_content %}
+<table class="table table-bordered table-hover" role="grid">
+  <tbody>
+    <tr>
+        <td class="text-center" style="width:200px"> 主机唯一ID </td>
+        <td class="text-center">{{ network.uuid }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 设备名称 </td>
+        <td class="text-center">{{ network.hostname }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> ip地址 </td>
+        <td class="text-center">{{ network.ip }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 所在机柜 </td>
+        <td class="text-center">{{ network.cabinet }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 所在位置 </td>
+        <td class="text-center">{{ network.floor }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 上架时间 </td>
+        <td class="text-center">{{ network.up_time|date:"Y-m-d" }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 过保时间 </td>
+        <td class="text-center">{{ network.end_time|date:"Y-m-d" }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 厂商名称 </td>
+        <td class="text-center">{{ network.vender }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 设备型号 </td>
+        <td class="text-center">{{ network.productname }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 设备状态 </td>
+        {% if host.status == "1"  %}
+        <td class="text-center"> 使用中</td>
+        {% elif host.status == "2"  %}
+        <td class="text-center"> 未使用</td>
+        {% elif host.status == "3"  %}
+        <td class="text-center"> 故障</td>
+        {% elif host.status == "4"  %}
+        <td class="text-center"> 未知</td>
+        {% else %}
+        <td class="text-center"> None</td>
+       {% endif %}
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 设备类型 </td>
+        {% if host.asset_type == "1" %}
+        <td class="text-center"> 交换机</td>
+        {% elif host.asset_type == "2" %}
+        <td class="text-center"> 路由器</td>
+        {% elif host.asset_type == "3" %}
+        <td class="text-center"> 安全设备</td>
+        {% else %}
+        <td class="text-center"> None</td>
+        {% endif %}
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 登陆方式 </td>
+        {% if host.asset_type == "1" %}
+        <td class="text-center"> HTTP</td>
+        {% elif host.asset_type == "2" %}
+        <td class="text-center"> SSH</td>
+        {% elif host.asset_type == "3" %}
+        <td class="text-center"> TELNET</td>
+        {% else %}
+        <td class="text-center"> None</td>
+        {% endif %}
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 用户名/密码 </td>
+        <td class="text-center">{{ network.user_passwd }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> SN码 </td>
+        <td class="text-center">{{ network.sn }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 备注信息 </td>
+        <td class="text-center">{{ network.note }}</td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="box">
+  <div class="box-header">
+    <h4 class="box-title">{{ page_title }}</h4>
+  </div>
+  <!-- /.box-header -->
+  <div class="box-body">
+    <div class="row">
+      <div class="col-sm-12">
+        <ul class="nav nav-tabs">
+          <li class="{% if request.GET.tab == 'host' or not request.GET.tab %} active{% endif %}" >
+              <a href="{% url 'report:machine' %}?tab=host">主机信息</a></li>
+          <li class="{% if request.GET.tab == 'cpu' %} active{% endif %}" ><a
+                  href="{% url 'report:cpu' %}?tab=cpu">CPU</a></li>
+          <li class="{% if request.GET.tab == 'mem' %} active{% endif %}" ><a
+                  href="{% url 'report:mem' %}?tab=mem">内存</a></li>
+          <li class="{% if request.GET.tab == 'disk' %} active{% endif %}" ><a
+                  href="{% url 'report:disk' %}?tab=disk">磁盘</a></li>
+          <li class="{% if request.GET.tab == 'network' %} active{% endif %}" ><a
+                  href="{% url 'report:network' %}?tab=network">网卡</a></li>
+        </ul>
+
+        {% block export_content %}
+            {% include "" %}
+        {% endblock %}
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer_script %}
+<script>
+$(function(){
+  $("#assets_menu").addClass('active menu-open');
+  $("#menu_report").addClass('active');
+
+});
+</script>
+{% endblock %}

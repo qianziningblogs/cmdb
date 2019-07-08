@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load humansize %}
+
+{% block content %}
+
+<div class="box">
+  <div class="box-header">
+    <h4 class="box-title">{{ page_title }}</h4>
+  </div>
+  <!-- /.box-header -->
+		<div id="container">
+			<div id="head"></div>
+			<div id="content1">
+				<ul class="flag">
+				</ul>
+				<!--<img class="pic" src="img/27570.gif" />-->
+			</div>
+			<div id="foot"></div>
+		</div></div>
+{% endblock %}
+
+{% block footer_script %}
+<script>
+$(function(){
+  $("#assets_menu").addClass('active menu-open');
+  $("#menu_cabinet").addClass('active');
+
+});
+</script>
+<script type="text/javascript">
+    var details='';
+    var a=0;
+    function over(){
+        $(".str").show()
+        }
+    function out(){
+        $(".str").hide()
+                   }
+    function getlist(){
+        $.ajax({
+           url: "{% url 'server:cabinet_detail' cabinet.pk %}",//json文件位置
+           type: "get",//请求方式为get
+           dataType: "json", //返回数据格式为json
+           success: function() {//请求成功完成后要执行的方法
+           },
+           error:function() {
+                details = {{ details|safe }};
+               for (var i={{ count|safe }};i>0;i--){
+                var str = '';
+                str+='<ol>'+i+'</ol>';
+                $('.flag').append(str);
+               }
+
+               for(var n=0;n<details.length;n++) {
+                   var totalHeight = $('#content1').height();
+                   var img = '';
+                   console.log(details[n].num);
+                   if (details[n].num == 1) {
+                       img += '<div class="pic" id="pic"  style="height:' + details[n].num * 30 + 'px; top:' + (totalHeight - details[n].flag * 30 + 8) + 'px"> </div>' +
+                               '<div class="str" style="top:' + (totalHeight - details[n].flag * 30 +10) + 'px">ip:' + details[n].ip + '</div>'
+                   }
+                   else {
+                       if (details[n].num == 2) {
+                           img += '<div class="pic" id="pic2" style="height:' + details[n].num * 30 + 'px; top:' + (totalHeight - details[n].flag * 30 + 8) + 'px"> </div>' +
+                               '<div class="str" style="top:' + (totalHeight - details[n].flag * 30 +10) + 'px">ip:' + details[n].ip + '</div>'
+                       }
+                       else {
+                           if (details[n].num == 4) {
+                               img += '<div class="pic" id="pic4" style="height:' + details[n].num * 30 + 'px; top:' + (totalHeight - details[n].flag * 30 + 8) + 'px"> </div>' +
+                                   '<div class="str" style="top:' + (totalHeight - details[n].flag * 30 +10) + 'px">ip:' + details[n].ip + '</div>'
+                           }
+                       }
+                   }
+                   $('#content1').append(img);
+               }
+           }
+        })
+    }
+    getlist();
+
+
+</script>
+{% endblock %}

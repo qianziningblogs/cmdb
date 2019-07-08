@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load humansize %}
+
+{% block content %}
+<div class="box">
+  <div class="box-header">
+    <h4 class="box-title">{{ page_title }}</h4>
+  </div>
+  <!-- /.box-header -->
+  <div class="box-body">
+    <div class="row">
+      <div class="col-sm-12">
+        <ul class="nav nav-tabs">
+          <li class="{% if request.GET.tab == 'baseinfo' or not request.GET.tab %} active{% endif %}" ><a href="{% url 'server:machine_detail' host.uuid %}?tab=baseinfo">基本信息</a></li>
+          <li class="{% if request.GET.tab == 'cpu' %} active{% endif %}" ><a href="{% url 'server:machine_detail' host.uuid %}?tab=cpu">CPU</a></li>
+          <li class="{% if request.GET.tab == 'mem' %} active{% endif %}" ><a href="{% url 'server:machine_detail' host.uuid %}?tab=mem">内存</a></li>
+          <li class="{% if request.GET.tab == 'disk' %} active{% endif %}" ><a href="{% url 'server:machine_detail' host.uuid %}?tab=disk">磁盘</a></li>
+          <li class="{% if request.GET.tab == 'network' %} active{% endif %}" ><a href="{% url 'server:machine_detail' host.uuid %}?tab=network">网卡</a></li>
+          {% if host.asset_type == "1" %}
+          <li class="{% if request.GET.tab == 'kvm' %} active{% endif %}" ><a href="{% url 'server:machine_detail' host.uuid %}?tab=kvm">虚拟机</a></li>
+          {% endif %}
+        </ul>
+
+        {% block detail_content %}{% endblock %}
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer_script %}
+<script>
+$(function(){
+  $("#assets_menu").addClass('active menu-open');
+  $("#menu_server").addClass('active');
+
+});
+</script>
+{% endblock %}

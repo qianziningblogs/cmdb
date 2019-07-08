@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="box">
+    <div class="box-header">
+      <h1 class="box-title">{{ page_title }}</h1>
+      <a href="#" data-url="{% url 'accounts:team_create' %}" class="add-btn btn bg-purple btn-sm pull-right">添加项目</a>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+      <div class="well">
+        <form class="form-inline">
+          <div class="form-group">
+            <input class="form-control" name="name" type="text" value="{{ request.GET.name }}" placeholder="项目名">
+          </div>
+          <button id="search_btn" type="submit" class="btn btn-default">查询</button>
+        </form>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <table id="" class="table table-bordered table-hover" role="grid">
+            <thead>
+              <tr role="row">
+                <th class="text-center">项目名</th>
+                <th class="text-center">负责人</th>
+                <th class="text-center">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for project in teams %}
+              <tr role="row" class="odd">
+                <td class="text-center"><a href="#">{{ project.name }}</a></td>
+                <td class="text-center"><small> {{ project.contacts }}</small></td>
+                <td class="text-center">
+                  <div class="btn-group">
+                    <a type="button" href="#" class="btn btn-primary btn-xs">编辑</a>
+                    <a type="button" href="#" class="btn del-btn btn-danger btn-xs">删除</a>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="row">
+          {% include 'paginator.html' %}
+      </div>
+    </div>
+    <!-- /.box-body -->
+</div>
+{% endblock %}
+
+{% block footer_script %}
+<script>
+$(function(){
+    $("#menu_accounts").addClass('active menu-open');
+    $("#menu_project").addClass('active');
+    $(".add-btn").on('click', function(e) {
+        e.preventDefault();
+        var url = $(this).attr('data-url');
+        ui.box({
+            title: '添加项目',
+            size: 'lg',
+            footer: false,
+            remote: url
+        });
+    });
+
+})
+</script>
+{% endblock %}

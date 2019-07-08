@@ -1,0 +1,28 @@
+{% extends "servers/machine_detail.html" %}
+{% load humansize %}
+
+{% block detail_content %}
+<table id="" class="table table-bordered table-hover" role="grid">
+  <thead>
+    <tr role="row">
+      <th class="text-center">序号</th>
+      <th class="text-center">大小</th>
+      <th class="text-center">sn码</th>
+      <th class="text-center">厂商</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for disk in disks %}
+    <tr role="row" class="odd">
+      <td class="text-center">{{ forloop.counter }}</td>
+      <td class="text-center">{{ disk.size }}</td>
+      <td class="text-center">{{ disk.sn }}</td>
+      <td class="text-center">{{ disk.vender }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  <tfoot>
+  </tfoot>
+</table>
+
+{% endblock %}

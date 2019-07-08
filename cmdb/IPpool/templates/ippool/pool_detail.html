@@ -1,0 +1,22 @@
+{% load humansize %}
+{% load get_uuid %}
+<table class="table table-bordered table-hover" role="grid">
+  <tbody>
+  <tr>
+        <td class="text-center" style="width:200px"> 已用ip </td>
+        <td class="text-center">
+            {% for u in used %}
+                <a href="/server/machine/detail/{% get_uuid u.ip %}/" target="_blank">  {{ u.ip }}{% if u.note %}-{{ u.note }}{% endif %}, </a>
+            {% endfor %}
+        </td>
+  </tr>
+  <tr>
+        <td class="text-center" style="width:200px"> 可用ip </td>
+        <td class="text-center">
+            {% for n in unused %}
+                {{ n.ip }},
+            {% endfor %}
+        </td>
+  </tr>
+  </tbody>
+</table>

@@ -1,0 +1,106 @@
+{% extends "servers/machine_detail.html" %}
+{% load humansize %}
+
+{% block detail_content %}
+<table class="table table-bordered table-hover" role="grid">
+  <tbody>
+    <tr>
+        <td class="text-center" style="width:200px"> 主机唯一ID </td>
+        <td class="text-center">{{ host.uuid }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 主机名 </td>
+        <td class="text-center">{{ host.hostname }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 系统类型 </td>
+        <td class="text-center">{{ host.os }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 系统版本 </td>
+        <td class="text-center">{{ host.os_version }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 内核 </td>
+        <td class="text-center">{{ host.kernel }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 主机ip </td>
+        <td class="text-center">{{ host.ip }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 管理ip </td>
+        <td class="text-center">{{ host.mange_ip }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 上架时间 </td>
+        <td class="text-center">{{ host.up_time|date:"Y-m-d" }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 过保时间 </td>
+        <td class="text-center">{{ host.end_time|date:"Y-m-d" }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 设备状态 </td>
+        <td class="text-center">{{ host.get_status_display }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 设备类型 </td>
+        <td class="text-center">{{ host.get_asset_type_display }}</td>
+
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 所属项目组 </td>
+        <td class="text-center">{{ host.team }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 所属机柜 </td>
+        <td class="text-center">{{ host.cabinet }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 所在位置 </td>
+        <td class="text-center">{{ host.floor }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 厂商名称 </td>
+        <td class="text-center">{{ host.vender }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 机器型号 </td>
+        <td class="text-center">{{ host.productname }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 用户名/密码 </td>
+        <td class="text-center">{{ host.user_passwd }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 责任人 </td>
+        <td class="text-center">{{ host.responsible }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> 应用描述 </td>
+        <td class="text-center">{{ host.app_note }}</td>
+    </tr>
+    {% if host.asset_type != "1" %}
+    <tr>
+        <td class="text-center" style="width:200px"> 所属主机 </td>
+        <td class="text-center">{{ host.node }}</td>
+    </tr>
+    {% endif %}
+    {% for b in bios %}
+    <tr>
+        <td class="text-center" style="width:200px"> BIOS厂商 </td>
+        <td class="text-center">{{ b.vender }}</td>
+    </tr>
+    <tr>
+        <td class="text-center" style="width:200px"> BIOS版本号 </td>
+        <td class="text-center">{{ b.version }}</td>
+    </tr>
+  {% endfor %}
+   <tr>
+        <td class="text-center" style="width:200px"> 备注 </td>
+        <td class="text-center">{{ host.note }}</td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}

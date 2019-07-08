@@ -1,0 +1,293 @@
+{% extends "base.html" %}
+{% load get_url_args %}
+{% block content %}
+<div class="box">
+    <div class="box-header">
+      <h1 class="box-title">{{ page_title }}</h1>
+      <a href="{% url 'server:machine_create' %}" class="btn bg-purple btn-sm pull-right">添加机器</a>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+      <div class="well">
+        <form class="form-inline">
+          <div class="form-group">
+            <input class="form-control" name="hostname" type="text" value="{{ request.GET.hostname }}" placeholder="主机名">
+            <input class="form-control" name="ip" type="text" value="{{ request.GET.ip }}" placeholder="IP,不支持模糊查询">
+            <input class="form-control" name="team" type="text" value="{{ request.GET.team }}" placeholder="项目名">
+{#            <input class="form-control" name="cabinet" type="text" value="{{ request.GET.cabinet }}" placeholder="机柜">#}
+            <input class="form-control" name="responsible" type="text" value="{{ request.GET.responsible }}" placeholder="责任人">
+          </div>
+          <button id="search_btn" type="submit" class="btn btn-default">查询</button>
+          <button class="btn btn-danger pull-right btn-sm"
+                  data-toggle="modal" data-target=".export"
+                  type="button"
+                  {% if not object_list or  not request.user.is_superuser %} disabled{% endif %}>数据导出</button>
+
+
+            <div class="btn-group">
+                  <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown"
+                          aria-haspopup="true"
+                          {% if not request.user.is_superuser %}disabled{% endif %}
+                          aria-expanded="false">
+                    批量导入 <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" style="min-width:100%">
+                    <li><a href="{% url 'report:down_demo' "machine" %}"><button
+                            type="button"
+                            class="btn btn-warning btn-xs">模板下载</button></a></li>
+                    <li><a href="" data-toggle="modal" data-target=".upload"><button class="btn btn-success
+    btn-xs">导入数据</button></a></li>
+                  </ul>
+            </div>
+        </form>
+      </div>
+    <!--批量导入modal-->
+        <div class="modal fade upload">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">导入csv文件</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form form-inline" action="{% url 'report:upload' %}" id="upload_f" method="post"
+                      enctype="multipart/form-data">
+                    {% csrf_token  %}
+                    <div class="col-md-8">
+                            {{ form.docfile }}
+                    </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="upload()" data-dismiss="modal">开始导入</button>
+              </div>
+            </div>
+            <!-- /.modal-content -->
+        <!-- /.modal-dialog -->
+        </div>
+
+    <!--导出modal-->
+        <div class="modal fade export">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">字段筛选</h4>
+              </div>
+              <div class="modal-body">
+                  <form id="filter" class="form-horizontal">
+                      <div class="col-md-3 checkbox form-group">
+                          <label>
+                              <input type="checkbox" name= "hostname" id="hostname" checked>主机名
+                          </label>
+                      </div>
+                      <div class="col-md-3 checkbox form-group">
+                        <label>
+                            <input type="checkbox" name= "os" id="os" checked>操作系统
+                        </label>
+                      </div>
+                      <div class="col-md-3 checkbox form-group">
+                        <label>
+                            <input type="checkbox" name= "ip" id="ip" checked>主机IP
+                        </label>
+                      </div>
+
+                      <div class="col-md-3 checkbox form-group">
+                        <label>
+                            <input type="checkbox" name= "cabinet" id="cabinet" checked>机柜
+                        </label>
+                      </div>
+                      <div class="col-md-3 checkbox form-group">
+                        <label>
+                            <input type="checkbox" name= "status" id="status" checked>使用状态
+                        </label>
+                      </div>
+
+                      <div class="col-md-3 checkbox form-group">
+                        <label>
+                            <input type="checkbox" name= "asset_type" id="asset_type" checked>类型
+                        </label>
+                      </div>
+                      <div class="col-md-3 checkbox form-group">
+                        <label>
+                            <input type="checkbox" name= "team" id="team" checked>项目组
+                        </label>
+                      </div>
+
+                      <div class="col-md-3 checkbox form-group">
+                        <label>
+                            <input type="checkbox" name= "responsible" id="responsible" checked>负责人
+                        </label>
+                      </div>
+                      <div class="col-md-3 checkbox form-group">
+                        <label>
+                            <input type="checkbox" name= "user_passwd" id="user_passwd" checked>账号密码
+                        </label>
+                      </div>
+                  </form>
+              </div>
+              <div class="modal-footer">
+                  <a id="export_link" href="{% url 'report:machine'%}?{% get_url_args request.get_full_path %}&download=1">
+                      <button type="button" class="btn btn-sm btn-success">开始导出</button></a>
+              </div>
+            </div>
+            <!-- /.modal-content -->
+        <!-- /.modal-dialog -->
+        </div>
+    <!--modal-->
+      <div class="row">
+        <div class="col-sm-12">
+          <table id="" class="table table-bordered table-hover" role="grid">
+            <thead>
+              <tr role="row">
+                <th class="text-center">主机名</th>
+                <th class="text-center">操作系统</th>
+                <th class="text-center">机柜</th>
+                <th class="text-center">主机ip地址</th>
+                <th class="text-center">状态</th>
+                <th class="text-center">类型</th>
+                <th class="text-center">项目组</th>
+                <th class="text-center">责任人</th>
+                <th class="text-center">账号/密码</th>
+                <th class="text-center">操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for host in hosts %}
+              <tr role="row" class="odd">
+                <td class="text-center"><a href="{% url 'server:machine_detail' host.uuid %}">{{ host.hostname }}</a></td>
+                <td class="text-center"><small> {{ host.os }}</small></td>
+                <td class="text-center"> {{ host.cabinet }}</td>
+                <td class="text-center"> {{ host.ip }}</td>
+                <td class="text-center"> {{ host.get_status_display }}</td>
+                <td class="text-center"> {{ host.get_asset_type_display }}</td>
+                <td class="text-center"> {{ host.team }}</td>
+                <td class="text-center"> {{ host.responsible }}</td>
+                <td class="text-center"> {{ host.user_passwd }}</td>
+                <td class="text-center">
+                  <div class="btn-group">
+                    <a type="button" href="{% url 'server:machine_detail' host.uuid %}" class="btn btn-primary btn-xs">详情</a>
+{#                    <button id="{{ host.ip }}" class="btn btn-info btn-xs btn_ssh"#}
+{#                            {% if not request.user.is_superuser %}disabled{% endif %}>连接</button>#}
+                    <a type="button" href="#" data-url="{% url 'server:machine_update' host.pk %}" class="edit-btn btn btn-warning btn-xs">编辑</a>
+                    <a type="button" href="{% url 'server:timeline_list' host.ip %}"  class="list-btn btn btn-success btn-xs">变更记录</a>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="row">
+          {% include 'paginator.html' %}
+      </div>
+    </div>
+    <!-- /.box-body -->
+</div>
+{% endblock %}
+
+{% block footer_script %}
+<script>
+
+$(function(){
+    $("#assets_menu").addClass('active menu-open');
+    $("#menu_server").addClass('active');
+
+    // check 事件
+    $("#filter input").click(function () {
+        // 复位
+        model_field_str = "";
+        // 遍历状态
+        var checkboxesList = $("#filter input");
+        console.log(checkboxesList.length);
+        $.each(checkboxesList,function(i,item){
+           if($(item).prop("checked") === false){
+               model_field_str += item.name+",";
+               console.log("nochecked:", i, item.id, item.name);
+            }else{
+               console.log("checked:", i, item.id, item.name);
+           }
+    　　});
+       console.log("exclude_field:", model_field_str);
+       var search_args = "{% get_url_args request.get_full_path %}";
+       $("#export_link").attr({"href":"{% url 'report:machine'%}"+'?'+search_args+"&exclude="+model_field_str+"&download=1"});
+    });
+
+
+
+    $(".edit-btn").on('click', function(e) {
+        e.preventDefault();
+        var url = $(this).attr('data-url');
+        ui.box({
+            title: '编辑标签',
+            size: 'lg',
+            footer: false,
+            remote: url
+        });
+    });
+
+
+});
+
+//ajax 提交form表单
+function upload() {
+    var form = new FormData(document.getElementById("upload_f"));
+    $.ajax({
+    //几个参数需要注意一下
+        type: "POST",//方法类型
+        dataType: "json",//预期服务器返回的数据类型
+        contentType: false,
+        processData: false,
+        url: "{% url 'report:upload' %}" ,//url
+{#                data: $('#upload_f').serialize(),#}
+        data: form,
+        success: function (result, status, xhr) {
+{#                    console.log(result);//打印服务端返回的数据(调试用)#}
+{#                    console.log(status);#}
+{#                    console.log(xhr);#}
+            if(result.code === "1"){
+                layer.open({
+                type: 0,
+                title: "导入失败",
+                content: result.msg,
+                icon: 2,
+                skin: "layui-layer-lan"
+                });
+            }else{
+               layer.open({
+                type: 0,
+                title: "导入成功",
+                content: "共成功导入 "+result.data.length+" 条",
+                icon: 1,
+                skin: "layui-layer-lan"
+                });
+               location.reload();
+            }
+        },
+        error : function(xhr, status, error) {
+{#                    console.log(xhr);#}
+{#                    console.log(status);#}
+{#                    console.log(error);#}
+            layer.open({
+                type: 0,
+                title: "Server Error",
+                content: "后台error"+error,
+                icon: 2,
+                skin: "layui-layer-lan"
+            });
+        }
+    });
+}
+
+/*
+$(".btn_ssh").click(function () {
+    window.open("/ssh/terminal/"+this.id+"/","_blank", "toolbar=yes, location=yes, directories=no, status=no,menubar=yes, " +
+        "scrollbars=yes, resizable=no, copyhistory=yes, width=800, height=800")
+})
+*/
+
+</script>
+{% endblock %}
