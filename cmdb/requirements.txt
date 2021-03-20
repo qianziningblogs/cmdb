@@ -27,7 +27,7 @@ idna==2.6
 ipaddress==1.0.19
 IPy==0.83
 iso8601==0.1.12
-Jinja2==2.10
+Jinja2==2.11.3
 jmespath==0.9.3
 jsonpatch==1.21
 jsonpointer==2.0
