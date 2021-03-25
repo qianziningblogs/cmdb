@@ -74,7 +74,7 @@ python-ldap==3.0.0
 python-neutronclient==6.7.0
 python-novaclient==10.1.0
 pytz==2018.3
-PyYAML==3.12
+PyYAML==5.4
 pyzabbix==0.7.4
 redis==2.10.6
 requests==2.18.4
